@@ -13,4 +13,9 @@ void setup() {
 void loop() {
     // Use the library's initialized objects and functions
     newHavenDisplay.splashScreen();
+    delay(2000);
+    newHavenDisplay.clear();
+    delay(1000);
+    newHavenDisplay.updateCell(1,5,'+');
+    delay(2000);
 }

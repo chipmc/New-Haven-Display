@@ -66,6 +66,13 @@ void NewHavenDisplay::begin()
 }
 
 /**
+* Clear the Display
+*/
+void NewHavenDisplay::clear() {
+   command(0x01);        // Clear display
+}
+
+/**
  * Prepares the transmission of a command
  */
 void NewHavenDisplay::command(byte c)
@@ -145,6 +152,30 @@ void NewHavenDisplay::updateRow( byte targetRow, const char *newRow)
       }
    }
 }
+
+/**
+* Puts a Character in a specific position
+*/
+void updateRow(byte targetROW, byte targetCOL, const char Character) {
+   if (targetROW < 0 || targetROW > ROW_N) targetROW = 0;
+   if (targetCOL < 0 || targetCOL > COL_N) targetCOl = 0;
+
+   command(new_line[targetROW]);
+   command(0xFE);
+   command(0x45);
+   command(0x40);
+   data(Character);
+}
+
+/**
+ * Takes in a row of text and displays it
+*/
+void NewHavenDisplay::updateCell(byte targetROW, byte targetCOL, const char targetCHAR) {
+   command(0x80 | (targetCOL + new_line[targetROW]));
+   delay(2);
+   data(targetCHAR);
+}
+
 
 /**
 * Example private method

@@ -1,16 +1,18 @@
 #pragma once
 
 /*
- * from Demo_NHD0420CW-Ax3_I2C.ino
- * 
- * Tutorial sketch for use of character OLED slim display family by Newhaven with Arduino Uno (Brian Beardmore: modifying for Particle Photon), using 
+ * from Demo_NHD0420CW-Ax3_I2C.in
+ * Datasheet for display: https://www.newhavendisplay.com/specs/NHD-0420CW-AY3.pdf
+ * Application notes for this display: https://www.newhavendisplay.com/resources_dataFiles/datasheets/OLEDs/US2066.pdf
+ *
+ * Tutorial sketch for use of character OLED slim display family by Newhaven with Arduino Uno (Brian Beardmore: modifying for Particle Photon), using
  * only Wire (I2C) library.  Models: NHD0420CW-Ax3, NHD0220CW-Ax3, NHD0216CW-Ax3. Controller: US2066
  * in this example, the display is connected to Photon via I2C interface.
  *
  * Displays on the OLED alternately a 4-line message and a sequence of character "block".
- * This pgm ssumes the use of a 4x20 display; if different, modify the values of the two variables 
+ * This pgm ssumes the use of a 4x20 display; if different, modify the values of the two variables
  * ROW_N e COLUMN_N.
- * The pgm uses the minimum possible of Photon pins; if you intend to use also /RES line, 
+ * The pgm uses the minimum possible of Photon pins; if you intend to use also /RES line,
  * the related instructions are already present, it's sufficient to remove the comment markers.
  *
  * The circuit modified by Brian Beardmore for Particle Photon I2C:
@@ -37,8 +39,7 @@
  */
 
 // This will load the definition for common Particle variable types
-#include "Particle.h"
-#include <application.h> // added for Photon support
+#include <Particle.h>
 
 // This is your main class that users will import into their application
 class NewHavenDisplay
@@ -60,6 +61,11 @@ public:
   void command( byte c);
 
   /**
+  * Clear the Display
+  */
+  void clear();
+
+  /**
    * Prepares the tranmission of a byte of data
    */
   void data( byte d);
@@ -79,6 +85,11 @@ public:
    */
   void updateRow(byte targetROW, const char *newRow);
 
+  /**
+  * Displays a single character at a specific row and column on the screen
+  */
+  void updateCell(byte targetROW, byte targetCOL, const char targetCHAR);
+
 private:
   /**
    * Define certain variables
@@ -90,12 +101,12 @@ protected:                              // These variables must match your displ
   const byte ROW_N = 4;                 // Number of display rows
   const byte COLUMN_N = 20;             // Number of display columns
   byte rows = 0x08;                     // Display mode: 1/3 lines or 2/4 lines; default 2/4 (0x08)
- 
+
   byte new_line[4] = {0x80, 0xA0, 0xC0, 0xE0};   // DDRAM address for each line of the display
-  byte tx_packet[20]={0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};                                   // Packet to be transmitted (max 20 bytes)
-  byte TEXT[4][21] = {"1-Newhaven Display--", 
-                      "2--This is a test---", 
-                      "3-16/20-Characters--", 
+  byte tx_packet[20]={0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};  // Packet to be transmitted (max 20 bytes)
+  byte TEXT[4][21] = {"1-Newhaven Display--",
+                      "2--This is a test---",
+                      "3-16/20-Characters--",
                       "4!@#$%^&*()_+{}[]<>?"};         // Strings to be displayed
 
 };
