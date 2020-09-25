@@ -1,6 +1,8 @@
 #pragma once
 
 /*
+ * Please note that this Library has been superceeded by a new version NewHaven-Display-I2C  - Please use this one.
+ *
  * from Demo_NHD0420CW-Ax3_I2C.in
  * Datasheet for display: https://www.newhavendisplay.com/specs/NHD-0420CW-AY3.pdf
  * Application notes for this display: https://www.newhavendisplay.com/resources_dataFiles/datasheets/OLEDs/US2066.pdf
