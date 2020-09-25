@@ -1,4 +1,4 @@
-/* New-Haven-Display library by Brian Beardmore
+/* New-Haven-Display library by Brian Beardmore - updated by Chip McClelland
  */
 
 #include "New-Haven-Display.h"
