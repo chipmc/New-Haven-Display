@@ -1,68 +1,60 @@
-/* New-Haven-Display library by Brian Beardmore - updated by Chip McClelland
+/* New-Haven-Display library adapted from NHD sample code by Chip McClelland
+* This library is specific to the New Haven Display NHD-0402CW-AY3 which is a 4x20 OLED
+* This library is specific to controlling the display on i2c but other options are available
+* See https://github.com/newhavendisplay for more examples
+* This display uses a NHD_US2066 controller, this repo may have more good bits: https://github.com/NewhavenDisplay/NHD_US2066
+* I am not using the reset pin in this library
+* This libary assumes 2.8-3.3V operation - see the Vdd regulator line in initialization if you want to power at 5V
  */
 
 #include "New-Haven-Display.h"
 
-/**
- * Constructor.
- */
-NewHavenDisplay::NewHavenDisplay()
+
+NewHavenDisplay::NewHavenDisplay()      // Constructor
 {
   // be sure not to call anything that requires hardware be initialized here, put those in begin()
 }
 
-/**
- * Initialize the display - specify the number of rows and columns
- */
+// Initialize the display - This code is specific to teh 4 row / 20 column I2C display
 void NewHavenDisplay::begin()
 {
-  byte rows = 0x08;
 
   Wire.begin();                             // Initiate the Wire library and join the I2C bus as a master
   delay(10);                                // Waits 10 ms for stabilization purpose
 
-  if (ROW_N == 2 || ROW_N == 4) rows = 0x08;                    // Display mode: 2/4 lines
-  else rows = 0x00;                    // Display mode: 1/3 lines
-
-  command(0x22 | rows); // Function set: extended command set (RE=1), lines #
-  command(0x71);        // Function selection A:
-  data(0x5C);           //  enable internal Vdd regulator at 5V I/O mode (def. value) (0x00 for disable, 2.8V I/O)
-  command(0x20 | rows); // Function set: fundamental command set (RE=0) (exit from extended command set), lines #
+  command(0x2A);        // Function set: extended command set (RE=1)
+    command(0x71);      // Function selection A:
+    data(0x00);         // disable internal Vdd regulator (0x00 for disable, 2.8V I/O)
+  command(0x28);        // Function set: fundamental command set (RE=0) (exit from extended command set)
   command(0x08);        // Display ON/OFF control: display off, cursor off, blink off (default values)
-  command(0x22 | rows); // Function set: extended command set (RE=1), lines #
+  command(0x2A);        // Function set: extended command set (RE=1)
   command(0x79);        // OLED characterization: OLED command set enabled (SD=1)
   command(0xD5);        // Set display clock divide ratio/oscillator frequency:
   command(0x70);        //  divide ratio=1, frequency=7 (default values)
   command(0x78);        // OLED characterization: OLED command set disabled (SD=0) (exit from OLED command set)
-
-  if (ROW_N > 2)
     command(0x09);  // Extended function set (RE=1): 5-dot font, B/W inverting disabled (def. val.), 3/4 lines
-  else
-    command(0x08);  // Extended function set (RE=1): 5-dot font, B/W inverting disabled (def. val.), 1/2 lines
-
+  //  command(0x08);  // Extended function set (RE=1): 5-dot font, B/W inverting disabled (def. val.), 1/2 lines
   command(0x06);        // Entry Mode set - COM/SEG direction: COM0->COM31, SEG99->SEG0 (BDC=1, BDS=0)
-  command(0x72);        // Function selection B:
-  data(0x0A);           //  ROM/CGRAM selection: ROM C, CGROM=250, CGRAM=6 (ROM=10, OPR=10)
-  command(0x79);        // OLED characterization: OLED command set enabled (SD=1)
-  command(0xDA);        // Set SEG pins hardware configuration:
-  command(0x10);        //  alternative odd/even SEG pin, disable SEG left/right remap (default values)
-  command(0xDC);        // Function selection C:
-  command(0x00);        //  internal VSL, GPIO input disable
-  command(0x81);        // Set contrast control:
-  command(0x7F);        //  contrast=127 (default value)
-  command(0xD9);        // Set phase length:
-  command(0xF1);        //  phase2=15, phase1=1 (default: 0x78)
-  command(0xDB);        // Set VCOMH deselect level:
-  command(0x40);        //  VCOMH deselect level=1 x Vcc (default: 0x20=0,77 x Vcc)
-  command(0x78);        // OLED characterization: OLED command set disabled (SD=0) (exit from OLED command set)
-  command(0x20 | rows); // Function set: fundamental command set (RE=0) (exit from extended command set), lines #
-  command(0x01);        // Clear display
-  delay(2);             // After a clear display, a minimum pause of 1-2 ms is required
-  command(0x80);        // Set DDRAM address 0x00 in address counter (cursor home) (default value)
-  command(0x0C);        // Display ON/OFF control: display ON, cursor off, blink off
-  delay(250);           // Waits 250 ms for stabilization purpose after display on
-
-  if (ROW_N == 2) new_line[1] = 0xC0;             // DDRAM address for each line of the display (only for 2-line mode)
+    command(0x72);        // Function selection B:
+    data(0x00);           //  ROM/CGRAM selection
+  command(0x2A);  //function set (extended command set)
+  command(0x79);  //OLED command set enabled
+  command(0xDA);  //set SEG pins hardware configuration
+  command(0x10);  //set SEG pins hardware configuration
+  command(0xDC);  //function selection C
+  command(0x00);  //function selection C
+  command(0x81);  //set contrast control
+  command(0x7F);  //set contrast control
+  command(0xD9);  //set phase length
+  command(0xF1);  //set phase length
+  command(0xDB);  //set VCOMH deselect level
+  command(0x40);  //set VCOMH deselect level
+  command(0x78);  //OLED command set disabled
+  command(0x28);  //function set (fundamental command set)
+  command(0x01);  //clear display
+  command(0x80);  //set DDRAM address to 0x00
+  command(0x0C);  //display ON
+  delay(100);
 }
 
 /**

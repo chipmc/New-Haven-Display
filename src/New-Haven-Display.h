@@ -16,6 +16,12 @@
  * ROW_N e COLUMN_N.
  * The pgm uses the minimum possible of Photon pins; if you intend to use also /RES line,
  * the related instructions are already present, it's sufficient to remove the comment markers.
+ * This library is specific to the New Haven Display NHD-0402CW-AY3 which is a 4x20 OLED
+ * This library is specific to controlling the display on i2c but other options are available
+ * See https://github.com/newhavendisplay for more examples
+ * This display uses a NHD_US2066 controller, this repo may have more good bits: https://github.com/NewhavenDisplay/NHD_US2066
+ * I am not using the reset pin in this library
+ * This libary assumes 2.8-3.3V operation - see the Vdd regulator line in initialization if you want to power at 5V
  *
  * The circuit modified by Brian Beardmore for Particle Photon I2C:
  * OLED pin 1 (Vss)          to VSS ground
@@ -36,6 +42,7 @@
  * Modified and adapted to Arduino Uno 15 Mar 2015 by Pasquale D'Antini
  * Modified 19 May 2015 by Pasquale D'Antini
  * Modified 06 Feb 2017 by Brian Beardmore for Particle Photon
+ * Modified 04 Jan 2020 based on sample initialization code provided by Ted Mellenthin at NHD
  *
  * This example code is in the public domain.
  */
