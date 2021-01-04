@@ -7,7 +7,7 @@
 * This libary assumes 2.8-3.3V operation - see the Vdd regulator line in initialization if you want to power at 5V
  */
 
-#include "New-Haven-Display.h"
+#include "New-Haven-Display-4x20-i2c.h"
 
 
 NewHavenDisplay::NewHavenDisplay()      // Constructor
